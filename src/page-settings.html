@@ -1,0 +1,130 @@
+<!-- 設定画面 -->
+<div class="page-header">
+  <h2><i class="bi bi-gear me-2"></i>設定</h2>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <!-- 自動生成トリガー設定 -->
+        <h6 style="color:var(--primary)" class="mb-3">
+          <i class="bi bi-clock me-1"></i>議事メモ自動生成
+        </h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label">実行時刻</label>
+            <select class="form-select" v-model="settingsForm.triggerHour">
+              <option v-for="h in 24" :key="h-1" :value="String(h-1)">{{ h-1 }}:00</option>
+            </select>
+          </div>
+          <div class="col-md-8 d-flex align-items-end gap-2">
+            <button class="btn btn-primary" @click="saveTrigger">
+              <i class="bi bi-play-fill me-1"></i>トリガー設定
+            </button>
+            <button class="btn btn-outline-danger" @click="removeTrigger">
+              <i class="bi bi-stop-fill me-1"></i>解除
+            </button>
+            <span class="ms-2" v-if="triggerStatus.active">
+              <span class="badge bg-success">有効</span>
+            </span>
+            <span class="ms-2" v-else>
+              <span class="badge bg-secondary">無効</span>
+            </span>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- カレンダー設定 -->
+        <h6 style="color:var(--primary)" class="mb-3">
+          <i class="bi bi-calendar3 me-1"></i>対象カレンダー
+        </h6>
+        <div class="mb-4">
+          <div class="form-check" v-for="cal in availableCalendars" :key="cal.id">
+            <input class="form-check-input" type="checkbox" :id="'cal-' + cal.id"
+                   :value="cal.id" v-model="settingsForm.targetCalendarIds">
+            <label class="form-check-label" :for="'cal-' + cal.id">{{ cal.name }}</label>
+          </div>
+          <button class="btn btn-sm btn-outline-secondary mt-2" @click="loadCalendars">
+            <i class="bi bi-arrow-clockwise me-1"></i>カレンダー一覧を更新
+          </button>
+        </div>
+
+        <hr>
+
+        <!-- デフォルトテンプレート -->
+        <h6 style="color:var(--primary)" class="mb-3">
+          <i class="bi bi-file-earmark-text me-1"></i>デフォルトテンプレート
+        </h6>
+        <div class="mb-4">
+          <select class="form-select" v-model="settingsForm.defaultTemplateId" style="max-width:400px">
+            <option value="">自動（isDefaultフラグで判定）</option>
+            <option v-for="t in templates" :key="t.id" :value="t.id">{{ t.name }}</option>
+          </select>
+        </div>
+
+        <hr>
+
+        <!-- データ保存先フォルダ -->
+        <h6 style="color:var(--primary)" class="mb-3">
+          <i class="bi bi-folder me-1"></i>データ保存先
+        </h6>
+        <div class="mb-4">
+          <div v-if="settingsForm.baseFolderUrl">
+            <a :href="settingsForm.baseFolderUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-folder2-open me-1"></i>保存先フォルダを開く
+            </a>
+          </div>
+          <p class="text-muted small mt-2">
+            保存先フォルダはセットアップ時に設定されています。変更するにはリセットが必要です。
+          </p>
+        </div>
+
+        <hr>
+
+        <!-- 保存ボタン -->
+        <button class="btn btn-primary" @click="saveAllSettings">
+          <i class="bi bi-check-lg me-1"></i>設定を保存
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 危険操作 -->
+  <div class="col-md-4">
+    <div class="card" style="border-color:var(--danger)">
+      <div class="card-header" style="background:var(--danger);color:#fff">
+        <h6 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>データリセット</h6>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small">
+          スプレッドシートとの紐付けを解除します。データは削除されませんが、
+          次回アクセス時に新しいスプレッドシートが作成されます。
+        </p>
+        <button class="btn btn-outline-danger btn-sm" @click="confirmReset">
+          <i class="bi bi-arrow-counterclockwise me-1"></i>リセット
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- リセット確認モーダル -->
+<div class="modal fade" id="resetConfirmModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">リセット確認</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        本当にリセットしますか？次回アクセス時に再セットアップが必要です。
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-danger" @click="doReset">リセット</button>
+      </div>
+    </div>
+  </div>
+</div>

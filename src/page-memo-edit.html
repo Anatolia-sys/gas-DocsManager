@@ -1,0 +1,110 @@
+<!-- 議事録編集画面 -->
+<div class="page-header d-flex align-items-center">
+  <h2 class="mb-0">
+    <i class="bi bi-pencil-square me-2"></i>
+    {{ editingMemo.id ? '議事録を編集' : '新規議事録' }}
+  </h2>
+  <div class="ms-auto">
+    <button class="btn btn-outline-secondary me-2" @click="cancelEdit">
+      <i class="bi bi-x-lg me-1"></i>キャンセル
+    </button>
+    <button class="btn btn-primary" @click="saveMemo">
+      <i class="bi bi-check-lg me-1"></i>保存
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="row g-3">
+      <!-- タイトル -->
+      <div class="col-12">
+        <label class="form-label">タイトル</label>
+        <input type="text" class="form-control" v-model="editingMemo.title" placeholder="会議タイトル">
+      </div>
+
+      <!-- 案件選択 -->
+      <div class="col-md-4">
+        <label class="form-label">案件</label>
+        <select class="form-select" v-model="editingMemo.projectId">
+          <option value="">未分類</option>
+          <option v-for="p in activeProjects" :key="p.id" :value="p.id">{{ p.name }}</option>
+        </select>
+      </div>
+
+      <!-- 日付・時間 -->
+      <div class="col-md-3">
+        <label class="form-label">日付</label>
+        <input type="date" class="form-control" v-model="editingMemo.date">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">開始</label>
+        <input type="time" class="form-control" v-model="editingMemo.startTime">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">終了</label>
+        <input type="time" class="form-control" v-model="editingMemo.endTime">
+      </div>
+
+      <!-- 参加者・リンク -->
+      <div class="col-md-6">
+        <label class="form-label">参加者</label>
+        <input type="text" class="form-control" v-model="editingMemo.attendees"
+               placeholder="カンマ区切りで入力">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">会議リンク</label>
+        <input type="url" class="form-control" v-model="editingMemo.meetingLink"
+               placeholder="https://...">
+      </div>
+
+      <!-- ステータス・テンプレート -->
+      <div class="col-md-4">
+        <label class="form-label">ステータス</label>
+        <select class="form-select" v-model="editingMemo.status">
+          <option value="draft">下書き</option>
+          <option value="completed">完了</option>
+          <option value="archived">アーカイブ</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">テンプレート</label>
+        <select class="form-select" v-model="editingMemo.templateId" @change="applyTemplate">
+          <option value="">選択しない</option>
+          <option v-for="t in templates" :key="t.id" :value="t.id">{{ t.name }}</option>
+        </select>
+      </div>
+      <div class="col-md-4" v-if="editingMemo.docUrl">
+        <label class="form-label">Googleドキュメント</label>
+        <div>
+          <a :href="editingMemo.docUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-file-earmark-text me-1"></i>ドキュメントを開く
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4" v-else-if="editingMemo.id && editingMemo.projectId">
+        <label class="form-label">Googleドキュメント</label>
+        <div>
+          <button class="btn btn-sm btn-outline-secondary" @click="createDocFromMemo">
+            <i class="bi bi-file-earmark-plus me-1"></i>ドキュメントを作成
+          </button>
+        </div>
+      </div>
+
+      <!-- 議事録本文 -->
+      <div class="col-12">
+        <label class="form-label">議事録本文</label>
+        <textarea class="form-control memo-content-editor" v-model="editingMemo.content"
+                  rows="15" placeholder="議事録の内容を記入してください"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer text-end">
+    <button class="btn btn-outline-secondary me-2" @click="cancelEdit">
+      <i class="bi bi-x-lg me-1"></i>キャンセル
+    </button>
+    <button class="btn btn-primary" @click="saveMemo">
+      <i class="bi bi-check-lg me-1"></i>保存
+    </button>
+  </div>
+</div>

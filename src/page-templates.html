@@ -1,0 +1,136 @@
+<!-- テンプレート管理画面 -->
+<div class="page-header">
+  <h2><i class="bi bi-file-earmark-text me-2"></i>テンプレート管理</h2>
+  <p>Googleドキュメントまたはテキストベースのテンプレートを管理します</p>
+</div>
+
+<div class="row g-3">
+  <!-- テンプレート一覧（左） -->
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">テンプレート一覧</h6>
+        <button class="btn btn-sm btn-primary ms-auto" @click="openNewTemplate">
+          <i class="bi bi-plus-lg me-1"></i>新規
+        </button>
+      </div>
+      <div class="list-group list-group-flush">
+        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center"
+           v-for="t in templates" :key="t.id"
+           :class="{ active: editingTemplate?.id === t.id }"
+           @click.prevent="selectTemplate(t)">
+          <div class="flex-grow-1">
+            <div>{{ t.name }}</div>
+            <div class="d-flex gap-1 mt-1">
+              <small class="text-muted" v-if="t.isDefault === true || t.isDefault === 'TRUE'">
+                <i class="bi bi-star-fill text-warning"></i> デフォルト
+              </small>
+              <span class="chip" v-if="t.docId" style="font-size:0.65rem">
+                <i class="bi bi-file-earmark-text"></i> GDoc
+              </span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline-danger ms-auto" @click.stop="confirmDeleteTemplate(t)"
+                  title="削除">
+            <i class="bi bi-trash"></i>
+          </button>
+        </a>
+        <div v-if="templates.length === 0" class="empty-state">
+          テンプレートがありません
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- テンプレート編集（右） -->
+  <div class="col-md-7">
+    <div class="card" v-if="editingTemplate">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">{{ editingTemplate.id ? 'テンプレート編集' : '新規テンプレート' }}</h6>
+        <div class="ms-auto">
+          <button class="btn btn-sm btn-outline-secondary me-1" @click="editingTemplate = null">
+            キャンセル
+          </button>
+          <button class="btn btn-sm btn-primary" @click="saveTemplate">
+            <i class="bi bi-check-lg me-1"></i>保存
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">テンプレート名</label>
+          <input type="text" class="form-control" v-model="editingTemplate.name">
+        </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="isDefaultCheck"
+                 v-model="editingTemplate.isDefault">
+          <label class="form-check-label" for="isDefaultCheck">デフォルトテンプレートにする</label>
+        </div>
+
+        <!-- Googleドキュメント設定 -->
+        <div class="mb-3 p-3" style="background:var(--bg-main);border-radius:var(--radius-sm)">
+          <label class="form-label fw-bold">
+            <i class="bi bi-google me-1"></i>Googleドキュメント連携（任意）
+          </label>
+          <input type="url" class="form-control" v-model="editingTemplate.docUrl"
+                 placeholder="https://docs.google.com/document/d/...">
+          <small class="text-muted">
+            GoogleドキュメントのURLを指定すると、ドキュメントの内容がテンプレートとして使用されます。
+            未指定の場合は下のテキストが使用されます。
+          </small>
+          <div v-if="editingTemplate.docUrl" class="mt-2">
+            <a :href="editingTemplate.docUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-box-arrow-up-right me-1"></i>ドキュメントを開く
+            </a>
+          </div>
+        </div>
+
+        <!-- タブ切替: 編集 / プレビュー -->
+        <ul class="nav nav-tabs mb-2">
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: templateTab === 'edit' }" href="#"
+               @click.prevent="templateTab = 'edit'">テキスト編集</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: templateTab === 'preview' }" href="#"
+               @click.prevent="templateTab = 'preview'">プレビュー</a>
+          </li>
+        </ul>
+
+        <div v-if="templateTab === 'edit'">
+          <textarea class="form-control memo-content-editor" v-model="editingTemplate.body"
+                    rows="12" :placeholder="editingTemplate.docUrl ? 'Googleドキュメントが設定されています。テキストはフォールバックとして使用されます。' : 'テンプレート本文を入力\n\n使用可能なプレースホルダー:\n{{会議タイトル}} {{日付}} {{開始時刻}} {{終了時刻}}\n{{参加者}} {{会議リンク}} {{説明}}'"></textarea>
+        </div>
+        <div v-if="templateTab === 'preview'">
+          <div class="template-preview">{{ editingTemplate.body }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" v-else>
+      <div class="card-body empty-state">
+        <i class="bi bi-arrow-left d-block"></i>
+        テンプレートを選択するか、新規作成してください
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- テンプレート削除確認モーダル -->
+<div class="modal fade" id="deleteTemplateModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">テンプレート削除</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        「{{ deletingTemplate?.name }}」を削除しますか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-danger" @click="doDeleteTemplate">削除</button>
+      </div>
+    </div>
+  </div>
+</div>

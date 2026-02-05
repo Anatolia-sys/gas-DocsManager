@@ -1,0 +1,108 @@
+<!-- メンバー管理画面 -->
+<div class="page-header">
+  <h2><i class="bi bi-people me-2"></i>メンバー管理</h2>
+  <p>議事録の共有先メンバーを管理します</p>
+</div>
+
+<div class="row g-3">
+  <!-- メンバー一覧（左） -->
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">メンバー一覧</h6>
+        <button class="btn btn-sm btn-primary ms-auto" @click="openNewMember">
+          <i class="bi bi-person-plus me-1"></i>追加
+        </button>
+      </div>
+      <div class="list-group list-group-flush">
+        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center"
+           v-for="m in members" :key="m.id"
+           :class="{ active: editingMember?.id === m.id }"
+           @click.prevent="selectMember(m)">
+          <span class="member-avatar me-3">{{ (m.name || m.email || '?').charAt(0) }}</span>
+          <div class="flex-grow-1">
+            <div class="fw-bold" style="font-size:0.9rem">{{ m.name || '（名前未設定）' }}</div>
+            <small :class="editingMember?.id === m.id ? 'text-white-50' : 'text-muted'">{{ m.email }}</small>
+            <div v-if="m.chatWebhookUrl">
+              <span class="chip mt-1" style="font-size:0.65rem">
+                <i class="bi bi-chat-dots"></i> Chat連携済
+              </span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline-danger ms-2" @click.stop="confirmDeleteMember(m)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </a>
+        <div v-if="members.length === 0" class="empty-state">
+          <i class="bi bi-person-plus d-block"></i>
+          メンバーがいません
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- メンバー編集（右） -->
+  <div class="col-md-7">
+    <div class="card" v-if="editingMember">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">{{ editingMember.id ? 'メンバー編集' : '新規メンバー' }}</h6>
+        <div class="ms-auto">
+          <button class="btn btn-sm btn-outline-secondary me-1" @click="editingMember = null">
+            キャンセル
+          </button>
+          <button class="btn btn-sm btn-primary" @click="saveMember">
+            <i class="bi bi-check-lg me-1"></i>保存
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">名前</label>
+          <input type="text" class="form-control" v-model="editingMember.name" placeholder="表示名">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">メールアドレス</label>
+          <input type="email" class="form-control" v-model="editingMember.email"
+                 placeholder="example@gmail.com">
+          <small class="text-muted">Gmailで議事録を配布する際に使用します</small>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Google Chat Webhook URL</label>
+          <input type="url" class="form-control" v-model="editingMember.chatWebhookUrl"
+                 placeholder="https://chat.googleapis.com/v1/spaces/...">
+          <small class="text-muted">
+            Google Chatで議事録を配布する際に使用します。
+            <a href="https://developers.google.com/chat/how-tos/webhooks" target="_blank"
+               style="color:var(--primary)">Webhook設定方法</a>
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" v-else>
+      <div class="card-body empty-state">
+        <i class="bi bi-person-plus d-block"></i>
+        メンバーを選択するか、新規追加してください
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- メンバー削除確認モーダル -->
+<div class="modal fade" id="deleteMemberModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">メンバー削除</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        「{{ deletingMember?.name || deletingMember?.email }}」を削除しますか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-danger" @click="doDeleteMember">削除</button>
+      </div>
+    </div>
+  </div>
+</div>
