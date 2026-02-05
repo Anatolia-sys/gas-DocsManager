@@ -8,7 +8,520 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <?!= include('css'); ?>
+  <style>
+  /* === Claude風モダンデザイン === */
+  :root {
+    --primary: #D97757;
+    --primary-light: #E8956F;
+    --primary-dark: #C4603E;
+    --bg-main: #F5F0EB;
+    --bg-surface: #FFFFFF;
+    --bg-sidebar: #2C2B28;
+    --bg-sidebar-hover: #3D3C38;
+    --bg-sidebar-active: #4A4945;
+    --text-primary: #1A1915;
+    --text-secondary: #6B6560;
+    --text-sidebar: #D4D0CB;
+    --text-sidebar-active: #FFFFFF;
+    --border: #E5DED6;
+    --border-light: #F0EBE5;
+    --success: #3D8C6F;
+    --warning: #D4951A;
+    --danger: #C4453A;
+    --info: #4A7FB5;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --transition: 0.2s ease;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+  }
+
+  /* === レイアウト === */
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* === サイドバー === */
+  .sidebar {
+    width: 260px;
+    background: var(--bg-sidebar);
+    color: var(--text-sidebar);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    transition: transform var(--transition);
+  }
+
+  .sidebar-brand {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-brand h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sidebar-brand .brand-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 12px 8px;
+    overflow-y: auto;
+  }
+  .sidebar-nav .nav-section {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.35);
+    padding: 16px 12px 6px;
+    font-weight: 600;
+  }
+
+  .nav-item-sidebar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    color: var(--text-sidebar);
+    text-decoration: none;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    margin-bottom: 2px;
+  }
+  .nav-item-sidebar:hover {
+    background: var(--bg-sidebar-hover);
+    color: #fff;
+    border-left: 3px solid var(--primary);
+    padding-left: 9px;
+  }
+  .nav-item-sidebar.active {
+    background: var(--bg-sidebar-active);
+    color: var(--text-sidebar-active);
+    font-weight: 500;
+  }
+  .nav-item-sidebar i {
+    font-size: 1.05rem;
+    width: 20px;
+    text-align: center;
+  }
+
+  /* === メインコンテンツ === */
+  .main-content {
+    flex: 1;
+    margin-left: 260px;
+    padding: 24px 32px;
+    min-height: 100vh;
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+  }
+  .page-header h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+  }
+  .page-header p {
+    margin: 4px 0 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  /* === カード === */
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--border-light);
+    padding: 16px 20px;
+    font-weight: 600;
+  }
+  .card-body {
+    padding: 20px;
+  }
+  .card-footer {
+    background: transparent;
+    border-top: 1px solid var(--border-light);
+    padding: 12px 20px;
+  }
+
+  /* === ボタン === */
+  .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    transition: all var(--transition);
+  }
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    box-shadow: 0 4px 12px rgba(217, 119, 87, 0.35);
+    transform: translateY(-1px);
+  }
+  .btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    border-radius: var(--radius-sm);
+  }
+  .btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(217, 119, 87, 0.25);
+    transform: translateY(-1px);
+  }
+  .btn-outline-secondary:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+  .btn-danger:hover, .btn-outline-danger:hover {
+    box-shadow: 0 4px 12px rgba(196, 69, 58, 0.3);
+    transform: translateY(-1px);
+  }
+  .btn-outline-success:hover {
+    box-shadow: 0 4px 12px rgba(61, 140, 111, 0.25);
+    transform: translateY(-1px);
+  }
+  .btn { border-radius: var(--radius-sm); cursor: pointer; }
+
+  /* === フォーム === */
+  .form-control, .form-select {
+    border-radius: var(--radius-sm);
+    border-color: var(--border);
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.15);
+  }
+  .form-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  /* === ローディングオーバーレイ === */
+  .loading-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(245, 240, 235, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1070;
+    backdrop-filter: blur(4px);
+  }
+  .spinner-border {
+    color: var(--primary) !important;
+  }
+
+  /* === ステータスバッジ === */
+  .badge-draft { background-color: var(--warning); color: #fff; }
+  .badge-completed { background-color: var(--success); color: #fff; }
+  .badge-archived { background-color: var(--text-secondary); color: #fff; }
+  .badge-active { background-color: var(--success); color: #fff; }
+  .badge {
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+
+  /* === テーブル === */
+  .table {
+    border-color: var(--border-light);
+  }
+  .table thead th {
+    background: var(--bg-main);
+    border-bottom: 2px solid var(--border);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .table tbody td {
+    font-size: 0.875rem;
+    vertical-align: middle;
+    border-color: var(--border-light);
+    padding: 10px 12px;
+  }
+  .table-hover tbody tr:hover {
+    background-color: rgba(217, 119, 87, 0.12);
+  }
+  .table-row-selected {
+    background-color: rgba(217, 119, 87, 0.08) !important;
+  }
+
+  /* === アクションバー === */
+  .action-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: var(--bg-surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  /* === 検索バー === */
+  .search-bar {
+    max-width: 280px;
+  }
+  .search-bar .form-control {
+    border-left: none;
+  }
+  .search-bar .input-group-text {
+    background: var(--bg-surface);
+    border-color: var(--border);
+  }
+
+  /* === 編集エリア === */
+  .memo-content-editor {
+    min-height: 300px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    border-radius: var(--radius-sm);
+  }
+
+  /* === インライン編集 === */
+  .inline-edit-input {
+    border: 2px solid var(--primary);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.875rem;
+    width: 100%;
+    max-width: 300px;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.15);
+  }
+
+  /* === テンプレートプレビュー === */
+  .template-preview {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  /* === リストグループ === */
+  .list-group-item {
+    border-color: var(--border-light);
+    transition: background-color var(--transition);
+  }
+  .list-group-item.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+  }
+  .list-group-item-action:hover {
+    background-color: rgba(217, 119, 87, 0.15);
+  }
+
+  /* === モーダル === */
+  .modal-content {
+    border-radius: var(--radius);
+    border: none;
+    box-shadow: var(--shadow-md);
+  }
+  .modal-header {
+    border-bottom-color: var(--border-light);
+  }
+  .modal-footer {
+    border-top-color: var(--border-light);
+  }
+
+  /* === トースト === */
+  .toast {
+    border-radius: var(--radius-sm);
+  }
+
+  /* === セットアップ画面 === */
+  .setup-card {
+    max-width: 500px;
+    margin: 80px auto;
+    text-align: center;
+  }
+  .setup-card .setup-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  /* === 空状態 === */
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-secondary);
+  }
+  .empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.4;
+    margin-bottom: 12px;
+  }
+
+  /* === メンバーアバター === */
+  .member-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  /* === レスポンシブ === */
+  @media (max-width: 991px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+    .sidebar.show {
+      transform: translateX(0);
+    }
+    .main-content {
+      margin-left: 0;
+    }
+    .sidebar-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+    }
+  }
+
+  /* === モバイルヘッダー === */
+  .mobile-header {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-surface);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    gap: 12px;
+  }
+  @media (max-width: 991px) {
+    .mobile-header {
+      display: flex;
+    }
+    .main-content {
+      padding: 16px;
+    }
+  }
+
+  /* === 案件カード === */
+  .project-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    transition: all var(--transition);
+    cursor: pointer;
+  }
+  .project-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(217, 119, 87, 0.2);
+    transform: translateY(-2px);
+  }
+  .project-card.selected {
+    border-color: var(--primary);
+    background: rgba(217, 119, 87, 0.04);
+  }
+
+  /* === タグ・チップ === */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    background: var(--bg-main);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  /* === 配布ボタン === */
+  .distribute-btn-group .btn {
+    font-size: 0.8rem;
+  }
+
+  /* === nav tabs カスタム === */
+  .nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 16px;
+    font-weight: 500;
+  }
+  .nav-tabs .nav-link.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: transparent;
+  }
+  .nav-tabs .nav-link:hover {
+    color: var(--primary);
+    border-color: transparent;
+    border-bottom-color: var(--primary-light);
+  }
+  </style>
 </head>
 <body>
   <div id="app">
@@ -114,32 +627,918 @@
 
         <!-- 議事録一覧画面 -->
         <div v-if="currentPage === 'memos'">
-          <?!= include('page-memos'); ?>
+<!-- 議事録一覧画面 -->
+<div class="page-header">
+  <h2><i class="bi bi-list-check me-2"></i>議事録一覧</h2>
+</div>
+
+<!-- アクションバー -->
+<div class="action-bar">
+  <button class="btn btn-primary" @click="openNewMemo">
+    <i class="bi bi-plus-lg me-1"></i>新規作成
+  </button>
+  <button class="btn btn-outline-secondary" @click="fetchFromCalendar">
+    <i class="bi bi-calendar-event me-1"></i>カレンダーから取得
+  </button>
+  <button class="btn btn-outline-secondary" @click="refreshMemos">
+    <i class="bi bi-arrow-clockwise me-1"></i>更新
+  </button>
+
+  <!-- 一括操作（選択時表示） -->
+  <template v-if="selectedMemoIds.length > 0">
+    <span class="text-muted ms-2">{{ selectedMemoIds.length }}件選択</span>
+    <div class="btn-group ms-1">
+      <button class="btn btn-sm btn-outline-success" @click="bulkStatus('completed')">完了</button>
+      <button class="btn btn-sm btn-outline-warning" @click="bulkStatus('draft')">下書き</button>
+      <button class="btn btn-sm btn-outline-danger" @click="bulkDelete">削除</button>
+    </div>
+  </template>
+
+  <!-- フィルタ・検索（右寄せ） -->
+  <div class="ms-auto d-flex gap-2 flex-wrap">
+    <!-- 案件フィルタ -->
+    <select class="form-select form-select-sm" v-model="memoProjectFilter" style="width:auto;min-width:120px">
+      <option value="all">全案件</option>
+      <option value="">未分類</option>
+      <option v-for="p in projects" :key="p.id" :value="p.id">{{ p.name }}</option>
+    </select>
+    <!-- ステータスフィルタ -->
+    <select class="form-select form-select-sm" v-model="memoFilter" style="width:auto">
+      <option value="all">すべて</option>
+      <option value="draft">下書き</option>
+      <option value="completed">完了</option>
+      <option value="archived">アーカイブ</option>
+    </select>
+    <!-- 日付範囲フィルタ -->
+    <input type="date" class="form-control form-control-sm" v-model="memoDateFrom"
+           style="width:auto" placeholder="開始日" title="開始日">
+    <span class="align-self-center text-muted">〜</span>
+    <input type="date" class="form-control form-control-sm" v-model="memoDateTo"
+           style="width:auto" placeholder="終了日" title="終了日">
+    <!-- テキスト検索 -->
+    <div class="input-group input-group-sm search-bar">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="form-control" placeholder="検索..." v-model="memoSearch">
+    </div>
+  </div>
+</div>
+
+<!-- 一覧テーブル -->
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th style="width:30px">
+            <input type="checkbox" class="form-check-input"
+                   :checked="isAllSelected" @change="toggleSelectAll">
+          </th>
+          <th>タイトル</th>
+          <th style="width:100px">案件</th>
+          <th style="width:100px">日付</th>
+          <th style="width:90px">時間</th>
+          <th style="width:80px">ステータス</th>
+          <th style="width:140px">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="memo in filteredMemos" :key="memo.id"
+            :class="{ 'table-row-selected': selectedMemoIds.includes(memo.id) }">
+          <td @click.stop>
+            <input type="checkbox" class="form-check-input"
+                   :checked="selectedMemoIds.includes(memo.id)"
+                   @change="toggleSelect(memo.id)">
+          </td>
+          <td>
+            <template v-if="inlineEditId === memo.id">
+              <input class="inline-edit-input" v-model="inlineEditValue"
+                     @keyup.enter="saveInlineEdit(memo)" @keyup.escape="cancelInlineEdit">
+            </template>
+            <template v-else>
+              <span @dblclick="startInlineEdit(memo, 'title')" style="cursor:pointer">
+                {{ memo.title || '（無題）' }}
+              </span>
+              <a v-if="memo.docUrl" :href="memo.docUrl" target="_blank"
+                 class="ms-1" style="color:var(--primary);font-size:0.75rem" title="Googleドキュメントを開く">
+                <i class="bi bi-file-earmark-text"></i>
+              </a>
+            </template>
+          </td>
+          <td>
+            <span class="chip" v-if="getProjectName(memo.projectId)">
+              {{ getProjectName(memo.projectId) }}
+            </span>
+            <span v-else class="text-muted" style="font-size:0.75rem">-</span>
+          </td>
+          <td style="font-size:0.8rem">{{ memo.date }}</td>
+          <td style="font-size:0.8rem">{{ memo.startTime }}{{ memo.endTime ? '-' + memo.endTime : '' }}</td>
+          <td>
+            <select class="form-select form-select-sm py-0" style="font-size:0.75rem"
+                    :value="memo.status" @change="quickStatusChange(memo, $event.target.value)">
+              <option value="draft">下書き</option>
+              <option value="completed">完了</option>
+              <option value="archived">アーカイブ</option>
+            </select>
+          </td>
+          <td>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary" @click="editMemo(memo)" title="編集">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <button class="btn btn-outline-success" @click="openDistributeModal(memo)" title="配布">
+                <i class="bi bi-send"></i>
+              </button>
+              <button class="btn btn-outline-danger" @click="confirmDeleteMemo(memo)" title="削除">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr v-if="filteredMemos.length === 0">
+          <td colspan="7" class="empty-state">
+            <i class="bi bi-inbox d-block"></i>
+            議事録がありません
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 削除確認モーダル -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">削除確認</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        「{{ deletingMemo?.title || '（無題）' }}」を削除しますか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-danger" @click="doDeleteMemo">削除</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- カレンダー取得モーダル -->
+<div class="modal fade" id="calendarModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title"><i class="bi bi-calendar-event me-2"></i>カレンダーから議事メモを生成</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">対象日</label>
+          <input type="date" class="form-control" v-model="calendarTargetDate">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">案件（任意）</label>
+          <select class="form-select" v-model="calendarProjectId">
+            <option value="">未分類</option>
+            <option v-for="p in activeProjects" :key="p.id" :value="p.id">{{ p.name }}</option>
+          </select>
+          <small class="text-muted">案件を指定するとGoogleドキュメントも自動作成されます</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-primary" @click="doFetchFromCalendar">
+          <i class="bi bi-download me-1"></i>生成
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 配布モーダル -->
+<div class="modal fade" id="distributeModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title"><i class="bi bi-send me-2"></i>議事録を配布</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-3">「{{ distributingMemo?.title || '（無題）' }}」を配布します。</p>
+        <h6 class="mb-2">配布先メンバー</h6>
+        <div v-for="m in members" :key="m.id" class="form-check mb-1">
+          <input class="form-check-input" type="checkbox" :id="'dist-' + m.id"
+                 :value="m.id" v-model="distributeMemberIds">
+          <label class="form-check-label" :for="'dist-' + m.id">
+            <span class="member-avatar me-1" style="width:24px;height:24px;font-size:0.6rem">
+              {{ (m.name || '?').charAt(0) }}
+            </span>
+            {{ m.name }} <small class="text-muted">{{ m.email }}</small>
+          </label>
+        </div>
+        <div v-if="members.length === 0" class="text-muted">
+          メンバーが登録されていません
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-primary" @click="doDistributeEmail"
+                :disabled="distributeMemberIds.length === 0">
+          <i class="bi bi-envelope me-1"></i>メールで送信
+        </button>
+        <button type="button" class="btn btn-success" @click="doDistributeChat"
+                :disabled="distributeMemberIds.length === 0">
+          <i class="bi bi-chat-dots me-1"></i>Chatで送信
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
         <!-- 議事録編集画面 -->
         <div v-if="currentPage === 'memo-edit'">
-          <?!= include('page-memo-edit'); ?>
+<!-- 議事録編集画面 -->
+<div class="page-header d-flex align-items-center">
+  <h2 class="mb-0">
+    <i class="bi bi-pencil-square me-2"></i>
+    {{ editingMemo.id ? '議事録を編集' : '新規議事録' }}
+  </h2>
+  <div class="ms-auto">
+    <button class="btn btn-outline-secondary me-2" @click="cancelEdit">
+      <i class="bi bi-x-lg me-1"></i>キャンセル
+    </button>
+    <button class="btn btn-primary" @click="saveMemo">
+      <i class="bi bi-check-lg me-1"></i>保存
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="row g-3">
+      <!-- タイトル -->
+      <div class="col-12">
+        <label class="form-label">タイトル</label>
+        <input type="text" class="form-control" v-model="editingMemo.title" placeholder="会議タイトル">
+      </div>
+
+      <!-- 案件選択 -->
+      <div class="col-md-4">
+        <label class="form-label">案件</label>
+        <select class="form-select" v-model="editingMemo.projectId">
+          <option value="">未分類</option>
+          <option v-for="p in activeProjects" :key="p.id" :value="p.id">{{ p.name }}</option>
+        </select>
+      </div>
+
+      <!-- 日付・時間 -->
+      <div class="col-md-3">
+        <label class="form-label">日付</label>
+        <input type="date" class="form-control" v-model="editingMemo.date">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">開始</label>
+        <input type="time" class="form-control" v-model="editingMemo.startTime">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">終了</label>
+        <input type="time" class="form-control" v-model="editingMemo.endTime">
+      </div>
+
+      <!-- 参加者・リンク -->
+      <div class="col-md-6">
+        <label class="form-label">参加者</label>
+        <input type="text" class="form-control" v-model="editingMemo.attendees"
+               placeholder="カンマ区切りで入力">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">会議リンク</label>
+        <input type="url" class="form-control" v-model="editingMemo.meetingLink"
+               placeholder="https://...">
+      </div>
+
+      <!-- ステータス・テンプレート -->
+      <div class="col-md-4">
+        <label class="form-label">ステータス</label>
+        <select class="form-select" v-model="editingMemo.status">
+          <option value="draft">下書き</option>
+          <option value="completed">完了</option>
+          <option value="archived">アーカイブ</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">テンプレート</label>
+        <select class="form-select" v-model="editingMemo.templateId" @change="applyTemplate">
+          <option value="">選択しない</option>
+          <option v-for="t in templates" :key="t.id" :value="t.id">{{ t.name }}</option>
+        </select>
+      </div>
+      <div class="col-md-4" v-if="editingMemo.docUrl">
+        <label class="form-label">Googleドキュメント</label>
+        <div>
+          <a :href="editingMemo.docUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-file-earmark-text me-1"></i>ドキュメントを開く
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4" v-else-if="editingMemo.id && editingMemo.projectId">
+        <label class="form-label">Googleドキュメント</label>
+        <div>
+          <button class="btn btn-sm btn-outline-secondary" @click="createDocFromMemo">
+            <i class="bi bi-file-earmark-plus me-1"></i>ドキュメントを作成
+          </button>
+        </div>
+      </div>
+
+      <!-- 議事録本文 -->
+      <div class="col-12">
+        <label class="form-label">議事録本文</label>
+        <textarea class="form-control memo-content-editor" v-model="editingMemo.content"
+                  rows="15" placeholder="議事録の内容を記入してください"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer text-end">
+    <button class="btn btn-outline-secondary me-2" @click="cancelEdit">
+      <i class="bi bi-x-lg me-1"></i>キャンセル
+    </button>
+    <button class="btn btn-primary" @click="saveMemo">
+      <i class="bi bi-check-lg me-1"></i>保存
+    </button>
+  </div>
+</div>
         </div>
 
         <!-- 案件管理画面 -->
         <div v-if="currentPage === 'projects'">
-          <?!= include('page-projects'); ?>
+<!-- 案件管理画面 -->
+<div class="page-header">
+  <h2><i class="bi bi-folder2-open me-2"></i>案件管理</h2>
+  <p>案件ごとにフォルダと議事録を管理します</p>
+</div>
+
+<div class="row g-3">
+  <!-- 案件一覧（左） -->
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">案件一覧</h6>
+        <button class="btn btn-sm btn-primary ms-auto" @click="openNewProject">
+          <i class="bi bi-plus-lg me-1"></i>新規案件
+        </button>
+      </div>
+      <div class="card-body p-0">
+        <div v-for="p in filteredProjects" :key="p.id"
+             class="project-card m-2" :class="{ selected: editingProject?.id === p.id }"
+             @click="selectProject(p)">
+          <div class="d-flex align-items-start">
+            <div class="flex-grow-1">
+              <div class="fw-bold">{{ p.name }}</div>
+              <small class="text-muted">{{ p.description || '説明なし' }}</small>
+              <div class="mt-1">
+                <span class="badge" :class="p.status === 'active' ? 'badge-active' : 'badge-archived'">
+                  {{ p.status === 'active' ? '進行中' : 'アーカイブ' }}
+                </span>
+                <span class="chip ms-1" v-if="getProjectMemberCount(p) > 0">
+                  <i class="bi bi-people-fill"></i> {{ getProjectMemberCount(p) }}名
+                </span>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-outline-danger ms-2" @click.stop="confirmDeleteProject(p)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+        <div v-if="filteredProjects.length === 0" class="empty-state">
+          <i class="bi bi-folder-plus d-block"></i>
+          案件がありません
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 案件編集（右） -->
+  <div class="col-md-7">
+    <div class="card" v-if="editingProject">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">{{ editingProject.id ? '案件を編集' : '新規案件' }}</h6>
+        <div class="ms-auto">
+          <button class="btn btn-sm btn-outline-secondary me-1" @click="editingProject = null">
+            キャンセル
+          </button>
+          <button class="btn btn-sm btn-primary" @click="saveProject">
+            <i class="bi bi-check-lg me-1"></i>保存
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">案件名</label>
+          <input type="text" class="form-control" v-model="editingProject.name" placeholder="案件名を入力">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">説明</label>
+          <textarea class="form-control" v-model="editingProject.description" rows="3"
+                    placeholder="案件の説明（任意）"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ステータス</label>
+          <select class="form-select" v-model="editingProject.status">
+            <option value="active">進行中</option>
+            <option value="archived">アーカイブ</option>
+          </select>
+        </div>
+        <div class="mb-3" v-if="editingProject.folderUrl">
+          <label class="form-label">Driveフォルダ</label>
+          <div>
+            <a :href="editingProject.folderUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-folder2-open me-1"></i>フォルダを開く
+            </a>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- メンバー割り当て -->
+        <h6 class="mb-3">参加メンバー</h6>
+        <div class="mb-2" v-for="m in members" :key="m.id">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" :id="'pm-' + m.id"
+                   :value="m.id" v-model="editingProject.selectedMemberIds">
+            <label class="form-check-label" :for="'pm-' + m.id">
+              <span class="member-avatar me-1">{{ (m.name || m.email || '?').charAt(0) }}</span>
+              {{ m.name || m.email }}
+              <small class="text-muted ms-1">{{ m.email }}</small>
+            </label>
+          </div>
+        </div>
+        <div v-if="members.length === 0" class="text-muted small">
+          メンバーが登録されていません。先にメンバーを追加してください。
+        </div>
+      </div>
+    </div>
+
+    <div class="card" v-else>
+      <div class="card-body empty-state">
+        <i class="bi bi-arrow-left d-block"></i>
+        案件を選択するか、新規作成してください
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 案件削除確認モーダル -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">案件削除</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        「{{ deletingProject?.name }}」を削除しますか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-danger" @click="doDeleteProject">削除</button>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
         <!-- メンバー管理画面 -->
         <div v-if="currentPage === 'members'">
-          <?!= include('page-members'); ?>
+<!-- メンバー管理画面 -->
+<div class="page-header">
+  <h2><i class="bi bi-people me-2"></i>メンバー管理</h2>
+  <p>議事録の共有先メンバーを管理します</p>
+</div>
+
+<div class="row g-3">
+  <!-- メンバー一覧（左） -->
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">メンバー一覧</h6>
+        <button class="btn btn-sm btn-primary ms-auto" @click="openNewMember">
+          <i class="bi bi-person-plus me-1"></i>追加
+        </button>
+      </div>
+      <div class="list-group list-group-flush">
+        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center"
+           v-for="m in members" :key="m.id"
+           :class="{ active: editingMember?.id === m.id }"
+           @click.prevent="selectMember(m)">
+          <span class="member-avatar me-3">{{ (m.name || m.email || '?').charAt(0) }}</span>
+          <div class="flex-grow-1">
+            <div class="fw-bold" style="font-size:0.9rem">{{ m.name || '（名前未設定）' }}</div>
+            <small :class="editingMember?.id === m.id ? 'text-white-50' : 'text-muted'">{{ m.email }}</small>
+            <div v-if="m.chatWebhookUrl">
+              <span class="chip mt-1" style="font-size:0.65rem">
+                <i class="bi bi-chat-dots"></i> Chat連携済
+              </span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline-danger ms-2" @click.stop="confirmDeleteMember(m)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </a>
+        <div v-if="members.length === 0" class="empty-state">
+          <i class="bi bi-person-plus d-block"></i>
+          メンバーがいません
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- メンバー編集（右） -->
+  <div class="col-md-7">
+    <div class="card" v-if="editingMember">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">{{ editingMember.id ? 'メンバー編集' : '新規メンバー' }}</h6>
+        <div class="ms-auto">
+          <button class="btn btn-sm btn-outline-secondary me-1" @click="editingMember = null">
+            キャンセル
+          </button>
+          <button class="btn btn-sm btn-primary" @click="saveMember">
+            <i class="bi bi-check-lg me-1"></i>保存
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">名前</label>
+          <input type="text" class="form-control" v-model="editingMember.name" placeholder="表示名">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">メールアドレス</label>
+          <input type="email" class="form-control" v-model="editingMember.email"
+                 placeholder="example@gmail.com">
+          <small class="text-muted">Gmailで議事録を配布する際に使用します</small>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Google Chat Webhook URL</label>
+          <input type="url" class="form-control" v-model="editingMember.chatWebhookUrl"
+                 placeholder="https://chat.googleapis.com/v1/spaces/...">
+          <small class="text-muted">
+            Google Chatで議事録を配布する際に使用します。
+            <a href="https://developers.google.com/chat/how-tos/webhooks" target="_blank"
+               style="color:var(--primary)">Webhook設定方法</a>
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" v-else>
+      <div class="card-body empty-state">
+        <i class="bi bi-person-plus d-block"></i>
+        メンバーを選択するか、新規追加してください
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- メンバー削除確認モーダル -->
+<div class="modal fade" id="deleteMemberModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">メンバー削除</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        「{{ deletingMember?.name || deletingMember?.email }}」を削除しますか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-danger" @click="doDeleteMember">削除</button>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
         <!-- テンプレート管理画面 -->
         <div v-if="currentPage === 'templates'">
-          <?!= include('page-templates'); ?>
+<!-- テンプレート管理画面 -->
+<div class="page-header">
+  <h2><i class="bi bi-file-earmark-text me-2"></i>テンプレート管理</h2>
+  <p>Googleドキュメントまたはテキストベースのテンプレートを管理します</p>
+</div>
+
+<div class="row g-3">
+  <!-- テンプレート一覧（左） -->
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">テンプレート一覧</h6>
+        <button class="btn btn-sm btn-primary ms-auto" @click="openNewTemplate">
+          <i class="bi bi-plus-lg me-1"></i>新規
+        </button>
+      </div>
+      <div class="list-group list-group-flush">
+        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center"
+           v-for="t in templates" :key="t.id"
+           :class="{ active: editingTemplate?.id === t.id }"
+           @click.prevent="selectTemplate(t)">
+          <div class="flex-grow-1">
+            <div>{{ t.name }}</div>
+            <div class="d-flex gap-1 mt-1">
+              <small class="text-muted" v-if="t.isDefault === true || t.isDefault === 'TRUE'">
+                <i class="bi bi-star-fill text-warning"></i> デフォルト
+              </small>
+              <span class="chip" v-if="t.docId" style="font-size:0.65rem">
+                <i class="bi bi-file-earmark-text"></i> GDoc
+              </span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-outline-danger ms-auto" @click.stop="confirmDeleteTemplate(t)"
+                  title="削除">
+            <i class="bi bi-trash"></i>
+          </button>
+        </a>
+        <div v-if="templates.length === 0" class="empty-state">
+          テンプレートがありません
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- テンプレート編集（右） -->
+  <div class="col-md-7">
+    <div class="card" v-if="editingTemplate">
+      <div class="card-header d-flex align-items-center">
+        <h6 class="mb-0">{{ editingTemplate.id ? 'テンプレート編集' : '新規テンプレート' }}</h6>
+        <div class="ms-auto">
+          <button class="btn btn-sm btn-outline-secondary me-1" @click="editingTemplate = null">
+            キャンセル
+          </button>
+          <button class="btn btn-sm btn-primary" @click="saveTemplate">
+            <i class="bi bi-check-lg me-1"></i>保存
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label class="form-label">テンプレート名</label>
+          <input type="text" class="form-control" v-model="editingTemplate.name">
+        </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="isDefaultCheck"
+                 v-model="editingTemplate.isDefault">
+          <label class="form-check-label" for="isDefaultCheck">デフォルトテンプレートにする</label>
+        </div>
+
+        <!-- Googleドキュメント設定 -->
+        <div class="mb-3 p-3" style="background:var(--bg-main);border-radius:var(--radius-sm)">
+          <label class="form-label fw-bold">
+            <i class="bi bi-google me-1"></i>Googleドキュメント連携（任意）
+          </label>
+          <input type="url" class="form-control" v-model="editingTemplate.docUrl"
+                 placeholder="https://docs.google.com/document/d/...">
+          <small class="text-muted">
+            GoogleドキュメントのURLを指定すると、ドキュメントの内容がテンプレートとして使用されます。
+            未指定の場合は下のテキストが使用されます。
+          </small>
+          <div v-if="editingTemplate.docUrl" class="mt-2">
+            <a :href="editingTemplate.docUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-box-arrow-up-right me-1"></i>ドキュメントを開く
+            </a>
+          </div>
+        </div>
+
+        <!-- タブ切替: 編集 / プレビュー -->
+        <ul class="nav nav-tabs mb-2">
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: templateTab === 'edit' }" href="#"
+               @click.prevent="templateTab = 'edit'">テキスト編集</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: templateTab === 'preview' }" href="#"
+               @click.prevent="templateTab = 'preview'">プレビュー</a>
+          </li>
+        </ul>
+
+        <div v-if="templateTab === 'edit'">
+          <textarea class="form-control memo-content-editor" v-model="editingTemplate.body"
+                    rows="12" :placeholder="editingTemplate.docUrl ? 'Googleドキュメントが設定されています。テキストはフォールバックとして使用されます。' : 'テンプレート本文を入力\n\n使用可能なプレースホルダー:\n{{会議タイトル}} {{日付}} {{開始時刻}} {{終了時刻}}\n{{参加者}} {{会議リンク}} {{説明}}'"></textarea>
+        </div>
+        <div v-if="templateTab === 'preview'">
+          <div class="template-preview">{{ editingTemplate.body }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" v-else>
+      <div class="card-body empty-state">
+        <i class="bi bi-arrow-left d-block"></i>
+        テンプレートを選択するか、新規作成してください
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- テンプレート削除確認モーダル -->
+<div class="modal fade" id="deleteTemplateModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">テンプレート削除</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        「{{ deletingTemplate?.name }}」を削除しますか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-danger" @click="doDeleteTemplate">削除</button>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
         <!-- 設定画面 -->
         <div v-if="currentPage === 'settings'">
-          <?!= include('page-settings'); ?>
+<!-- 設定画面 -->
+<div class="page-header">
+  <h2><i class="bi bi-gear me-2"></i>設定</h2>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <!-- 自動生成トリガー設定 -->
+        <h6 style="color:var(--primary)" class="mb-3">
+          <i class="bi bi-clock me-1"></i>議事メモ自動生成
+        </h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label">実行時刻</label>
+            <select class="form-select" v-model="settingsForm.triggerHour">
+              <option v-for="h in 24" :key="h-1" :value="String(h-1)">{{ h-1 }}:00</option>
+            </select>
+          </div>
+          <div class="col-md-8 d-flex align-items-end gap-2">
+            <button class="btn btn-primary" @click="saveTrigger">
+              <i class="bi bi-play-fill me-1"></i>トリガー設定
+            </button>
+            <button class="btn btn-outline-danger" @click="removeTrigger">
+              <i class="bi bi-stop-fill me-1"></i>解除
+            </button>
+            <span class="ms-2" v-if="triggerStatus.active">
+              <span class="badge bg-success">有効</span>
+            </span>
+            <span class="ms-2" v-else>
+              <span class="badge bg-secondary">無効</span>
+            </span>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- カレンダー設定 -->
+        <h6 style="color:var(--primary)" class="mb-3">
+          <i class="bi bi-calendar3 me-1"></i>対象カレンダー
+        </h6>
+        <div class="mb-4">
+          <div class="form-check" v-for="cal in availableCalendars" :key="cal.id">
+            <input class="form-check-input" type="checkbox" :id="'cal-' + cal.id"
+                   :value="cal.id" v-model="settingsForm.targetCalendarIds">
+            <label class="form-check-label" :for="'cal-' + cal.id">{{ cal.name }}</label>
+          </div>
+          <button class="btn btn-sm btn-outline-secondary mt-2" @click="loadCalendars">
+            <i class="bi bi-arrow-clockwise me-1"></i>カレンダー一覧を更新
+          </button>
+        </div>
+
+        <hr>
+
+        <!-- デフォルトテンプレート -->
+        <h6 style="color:var(--primary)" class="mb-3">
+          <i class="bi bi-file-earmark-text me-1"></i>デフォルトテンプレート
+        </h6>
+        <div class="mb-4">
+          <select class="form-select" v-model="settingsForm.defaultTemplateId" style="max-width:400px">
+            <option value="">自動（isDefaultフラグで判定）</option>
+            <option v-for="t in templates" :key="t.id" :value="t.id">{{ t.name }}</option>
+          </select>
+        </div>
+
+        <hr>
+
+        <!-- データ保存先フォルダ -->
+        <h6 style="color:var(--primary)" class="mb-3">
+          <i class="bi bi-folder me-1"></i>データ保存先
+        </h6>
+        <div class="mb-4">
+          <div v-if="settingsForm.baseFolderUrl">
+            <a :href="settingsForm.baseFolderUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-folder2-open me-1"></i>保存先フォルダを開く
+            </a>
+          </div>
+          <p class="text-muted small mt-2">
+            保存先フォルダはセットアップ時に設定されています。変更するにはリセットが必要です。
+          </p>
+        </div>
+
+        <hr>
+
+        <!-- 保存ボタン -->
+        <button class="btn btn-primary" @click="saveAllSettings">
+          <i class="bi bi-check-lg me-1"></i>設定を保存
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- データベース管理 -->
+  <div class="col-md-4">
+    <!-- 新規DB作成 -->
+    <div class="card mb-3">
+      <div class="card-header" style="background:var(--primary);color:#fff">
+        <h6 class="mb-0"><i class="bi bi-database-add me-2"></i>データベース管理</h6>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small">
+          新しいスプレッドシートDBを作成します。旧データは削除されず保持されます。
+        </p>
+        <div class="mb-3">
+          <label class="form-label small">保存先フォルダ</label>
+          <select class="form-select form-select-sm" v-model="recreateDbFolderId">
+            <option value="">現在のフォルダ（デフォルト）</option>
+            <option v-for="f in setupFolders" :key="f.id" :value="f.id">{{ f.name }}</option>
+          </select>
+          <button class="btn btn-sm btn-link p-0 mt-1" @click="loadSetupFolders" style="color:var(--primary)">
+            <i class="bi bi-arrow-clockwise me-1"></i>フォルダ一覧を更新
+          </button>
+        </div>
+        <button class="btn btn-primary btn-sm" @click="confirmRecreateDatabase">
+          <i class="bi bi-database-add me-1"></i>新規DBを作成
+        </button>
+      </div>
+    </div>
+
+    <!-- 危険操作 -->
+    <div class="card" style="border-color:var(--danger)">
+      <div class="card-header" style="background:var(--danger);color:#fff">
+        <h6 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>データリセット</h6>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small">
+          スプレッドシートとの紐付けを解除します。データは削除されませんが、
+          次回アクセス時に新しいスプレッドシートが作成されます。
+        </p>
+        <button class="btn btn-outline-danger btn-sm" @click="confirmReset">
+          <i class="bi bi-arrow-counterclockwise me-1"></i>リセット
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- リセット確認モーダル -->
+<div class="modal fade" id="resetConfirmModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">リセット確認</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        本当にリセットしますか？次回アクセス時に再セットアップが必要です。
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-danger" @click="doReset">リセット</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 新規DB作成確認モーダル -->
+<div class="modal fade" id="recreateDbModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">新規DB作成確認</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>新しいデータベースを作成しますか？</p>
+        <p class="text-muted small mb-0">旧データは削除されず保持されます。作成後、ページがリロードされます。</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-sm btn-primary" @click="doRecreateDatabase">作成</button>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
       </div>
     </div>
@@ -162,6 +1561,834 @@
     };
   </script>
 
-  <?!= include('js-app'); ?>
+  <script>
+/**
+ * google.script.run のPromiseラッパー
+ */
+function gasRun(funcName) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return new Promise(function(resolve, reject) {
+    var runner = google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(reject);
+    runner[funcName].apply(runner, args);
+  });
+}
+
+/**
+ * Vue.js アプリケーション
+ */
+var app = Vue.createApp({
+  data: function() {
+    return {
+      // 状態管理
+      setupDone: INITIAL_DATA.isSetupDone,
+      setupRunning: false,
+      setupFolderId: '',
+      setupFolders: [],
+      loading: false,
+      loadingMessage: '',
+      currentPage: 'memos',
+      sidebarOpen: false,
+
+      // トースト通知
+      toast: { message: '', type: 'success' },
+
+      // 議事録データ
+      memos: INITIAL_DATA.memos || [],
+      memoSearch: '',
+      memoFilter: 'all',
+      memoProjectFilter: 'all',
+      memoDateFrom: '',
+      memoDateTo: '',
+      selectedMemoIds: [],
+      editingMemo: {},
+      deletingMemo: null,
+
+      // インライン編集
+      inlineEditId: null,
+      inlineEditField: null,
+      inlineEditValue: '',
+
+      // カレンダー
+      calendarTargetDate: new Date().toISOString().split('T')[0],
+      calendarProjectId: '',
+
+      // テンプレート
+      templates: INITIAL_DATA.templates || [],
+      editingTemplate: null,
+      deletingTemplate: null,
+      templateTab: 'edit',
+
+      // 案件
+      projects: INITIAL_DATA.projects || [],
+      editingProject: null,
+      deletingProject: null,
+
+      // メンバー
+      members: INITIAL_DATA.members || [],
+      editingMember: null,
+      deletingMember: null,
+
+      // 配布
+      distributingMemo: null,
+      distributeMemberIds: [],
+
+      // 設定
+      settingsForm: {
+        triggerHour: '7',
+        targetCalendarIds: ['primary'],
+        defaultTemplateId: '',
+        baseFolderId: '',
+        baseFolderUrl: ''
+      },
+      triggerStatus: { active: false, hour: '7' },
+      availableCalendars: [],
+      recreateDbFolderId: ''
+    };
+  },
+
+  computed: {
+    // フィルタ・検索済み議事録
+    filteredMemos: function() {
+      var self = this;
+      var list = this.memos;
+
+      // ステータスフィルタ
+      if (this.memoFilter !== 'all') {
+        list = list.filter(function(m) { return m.status === self.memoFilter; });
+      }
+
+      // 案件フィルタ
+      if (this.memoProjectFilter !== 'all') {
+        list = list.filter(function(m) {
+          return (m.projectId || '') === self.memoProjectFilter;
+        });
+      }
+
+      // 日付範囲フィルタ
+      if (this.memoDateFrom) {
+        list = list.filter(function(m) {
+          return (m.date || '') >= self.memoDateFrom;
+        });
+      }
+      if (this.memoDateTo) {
+        list = list.filter(function(m) {
+          return (m.date || '') <= self.memoDateTo;
+        });
+      }
+
+      // テキスト検索
+      if (this.memoSearch) {
+        var q = this.memoSearch.toLowerCase();
+        list = list.filter(function(m) {
+          return (m.title || '').toLowerCase().indexOf(q) !== -1 ||
+                 (m.attendees || '').toLowerCase().indexOf(q) !== -1 ||
+                 (m.content || '').toLowerCase().indexOf(q) !== -1;
+        });
+      }
+
+      // 日付降順ソート
+      list.sort(function(a, b) {
+        return (b.date || '').localeCompare(a.date || '') ||
+               (b.startTime || '').localeCompare(a.startTime || '');
+      });
+
+      return list;
+    },
+
+    // 全選択状態
+    isAllSelected: function() {
+      return this.filteredMemos.length > 0 &&
+             this.selectedMemoIds.length === this.filteredMemos.length;
+    },
+
+    // アクティブな案件のみ
+    activeProjects: function() {
+      return this.projects.filter(function(p) {
+        return p.status === 'active' || p.status === '';
+      });
+    },
+
+    // フィルタ済み案件
+    filteredProjects: function() {
+      return this.projects;
+    }
+  },
+
+  mounted: function() {
+    if (this.setupDone) {
+      this.applySettings_(INITIAL_DATA.settings);
+      this.loadTriggerStatus();
+    }
+  },
+
+  methods: {
+    // === ナビゲーション ===
+    navigate: function(page) {
+      this.currentPage = page;
+      this.sidebarOpen = false;
+      if (page === 'settings') {
+        this.loadCalendars();
+        this.loadTriggerStatus();
+      }
+    },
+
+    // === トースト通知 ===
+    showToast: function(message, type) {
+      this.toast = { message: message, type: type || 'success' };
+      var el = this.$refs.toastEl;
+      if (el) {
+        var bsToast = new bootstrap.Toast(el, { delay: 3000 });
+        bsToast.show();
+      }
+    },
+
+    // === ローディング ===
+    showLoading: function(msg) {
+      this.loading = true;
+      this.loadingMessage = msg || '処理中...';
+    },
+    hideLoading: function() {
+      this.loading = false;
+    },
+
+    // === 初回セットアップ ===
+    loadSetupFolders: function() {
+      var self = this;
+      gasRun('getDriveFolders')
+        .then(function(folders) { self.setupFolders = folders || []; })
+        .catch(function() {});
+    },
+    runSetup: function() {
+      var self = this;
+      this.setupRunning = true;
+      gasRun('runSetup', this.setupFolderId || null)
+        .then(function(result) {
+          if (result.success) {
+            self.setupDone = true;
+            self.showToast('セットアップが完了しました');
+            self.refreshMemos();
+            self.refreshTemplates();
+            self.refreshProjects();
+            self.refreshMembers();
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) {
+          self.showToast('エラー: ' + err.message, 'danger');
+        })
+        .finally(function() {
+          self.setupRunning = false;
+        });
+    },
+
+    // === ヘルパー ===
+    getProjectName: function(projectId) {
+      if (!projectId) return '';
+      var p = this.projects.find(function(p) { return p.id === projectId; });
+      return p ? p.name : '';
+    },
+    getProjectMemberCount: function(project) {
+      try {
+        var ids = JSON.parse(project.memberIds || '[]');
+        return ids.length;
+      } catch (e) {
+        return 0;
+      }
+    },
+
+    // === 議事録一覧 ===
+    refreshMemos: function() {
+      var self = this;
+      gasRun('getMemos')
+        .then(function(data) { self.memos = data || []; })
+        .catch(function(err) { self.showToast('取得失敗: ' + err.message, 'danger'); });
+    },
+
+    // === 議事録 選択 ===
+    toggleSelect: function(id) {
+      var idx = this.selectedMemoIds.indexOf(id);
+      if (idx === -1) {
+        this.selectedMemoIds.push(id);
+      } else {
+        this.selectedMemoIds.splice(idx, 1);
+      }
+    },
+    toggleSelectAll: function() {
+      if (this.isAllSelected) {
+        this.selectedMemoIds = [];
+      } else {
+        this.selectedMemoIds = this.filteredMemos.map(function(m) { return m.id; });
+      }
+    },
+
+    // === 議事録 作成・編集 ===
+    openNewMemo: function() {
+      this.editingMemo = {
+        id: '',
+        title: '',
+        projectId: '',
+        date: new Date().toISOString().split('T')[0],
+        startTime: '',
+        endTime: '',
+        attendees: '',
+        meetingLink: '',
+        templateId: '',
+        content: '',
+        status: 'draft',
+        docUrl: ''
+      };
+      this.currentPage = 'memo-edit';
+    },
+
+    editMemo: function(memo) {
+      this.editingMemo = JSON.parse(JSON.stringify(memo));
+      this.currentPage = 'memo-edit';
+    },
+
+    cancelEdit: function() {
+      this.editingMemo = {};
+      this.currentPage = 'memos';
+    },
+
+    saveMemo: function() {
+      var self = this;
+      this.showLoading('保存中...');
+      var data = this.editingMemo;
+      var promise;
+
+      if (data.id) {
+        promise = gasRun('updateMemo', data.id, data);
+      } else {
+        promise = gasRun('createMemo', data);
+      }
+
+      promise
+        .then(function(result) {
+          if (result.success) {
+            self.showToast('保存しました');
+            self.refreshMemos();
+            self.currentPage = 'memos';
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+
+    // === Googleドキュメント作成 ===
+    createDocFromMemo: function() {
+      var self = this;
+      this.showLoading('ドキュメント作成中...');
+      gasRun('createDocumentFromMemo', this.editingMemo.id, this.editingMemo.projectId)
+        .then(function(result) {
+          if (result.success) {
+            self.editingMemo.docUrl = result.docUrl;
+            self.showToast(result.message);
+            self.refreshMemos();
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+
+    // === テンプレート適用 ===
+    applyTemplate: function() {
+      var templateId = this.editingMemo.templateId;
+      if (!templateId) return;
+      var tmpl = this.templates.find(function(t) { return t.id === templateId; });
+      if (tmpl && this.editingMemo.content === '') {
+        var content = tmpl.body || '';
+        var map = {
+          '{{会議タイトル}}': this.editingMemo.title || '',
+          '{{日付}}': this.editingMemo.date || '',
+          '{{開始時刻}}': this.editingMemo.startTime || '',
+          '{{終了時刻}}': this.editingMemo.endTime || '',
+          '{{参加者}}': this.editingMemo.attendees || '',
+          '{{会議リンク}}': this.editingMemo.meetingLink || '',
+          '{{説明}}': ''
+        };
+        Object.keys(map).forEach(function(key) {
+          content = content.split(key).join(map[key]);
+        });
+        this.editingMemo.content = content;
+      }
+    },
+
+    // === インライン編集 ===
+    startInlineEdit: function(memo, field) {
+      this.inlineEditId = memo.id;
+      this.inlineEditField = field;
+      this.inlineEditValue = memo[field] || '';
+    },
+    saveInlineEdit: function(memo) {
+      var self = this;
+      var updateData = {};
+      updateData[this.inlineEditField] = this.inlineEditValue;
+      gasRun('updateMemo', memo.id, updateData)
+        .then(function(result) {
+          if (result.success) {
+            memo[self.inlineEditField] = self.inlineEditValue;
+            self.showToast('更新しました');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.cancelInlineEdit(); });
+    },
+    cancelInlineEdit: function() {
+      this.inlineEditId = null;
+      this.inlineEditField = null;
+      this.inlineEditValue = '';
+    },
+
+    // === クイックステータス変更 ===
+    quickStatusChange: function(memo, newStatus) {
+      var self = this;
+      gasRun('updateMemo', memo.id, { status: newStatus })
+        .then(function(result) {
+          if (result.success) {
+            memo.status = newStatus;
+            self.showToast('ステータスを変更しました');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); });
+    },
+
+    // === 削除 ===
+    confirmDeleteMemo: function(memo) {
+      this.deletingMemo = memo;
+      new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
+    },
+    doDeleteMemo: function() {
+      var self = this;
+      var id = this.deletingMemo.id;
+      bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+      gasRun('bulkDeleteMemos', [id])
+        .then(function(result) {
+          if (result.success) {
+            self.memos = self.memos.filter(function(m) { return m.id !== id; });
+            self.showToast('削除しました');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); });
+    },
+
+    // === 一括操作 ===
+    bulkStatus: function(status) {
+      var self = this;
+      this.showLoading('更新中...');
+      gasRun('bulkUpdateMemoStatus', this.selectedMemoIds, status)
+        .then(function(result) {
+          if (result.success) {
+            self.selectedMemoIds.forEach(function(id) {
+              var m = self.memos.find(function(m) { return m.id === id; });
+              if (m) m.status = status;
+            });
+            self.selectedMemoIds = [];
+            self.showToast('一括更新しました');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+    bulkDelete: function() {
+      var self = this;
+      if (!confirm(this.selectedMemoIds.length + '件を削除しますか？')) return;
+      this.showLoading('削除中...');
+      gasRun('bulkDeleteMemos', this.selectedMemoIds)
+        .then(function(result) {
+          if (result.success) {
+            var ids = self.selectedMemoIds;
+            self.memos = self.memos.filter(function(m) { return ids.indexOf(m.id) === -1; });
+            self.selectedMemoIds = [];
+            self.showToast('削除しました');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+
+    // === カレンダーから取得 ===
+    fetchFromCalendar: function() {
+      new bootstrap.Modal(document.getElementById('calendarModal')).show();
+    },
+    doFetchFromCalendar: function() {
+      var self = this;
+      bootstrap.Modal.getInstance(document.getElementById('calendarModal')).hide();
+      this.showLoading('カレンダーからイベントを取得中...');
+      gasRun('generateMemosFromCalendar', this.calendarTargetDate, this.calendarProjectId || null)
+        .then(function(result) {
+          if (result.success) {
+            self.showToast(result.message);
+            self.refreshMemos();
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+
+    // === 配布 ===
+    openDistributeModal: function(memo) {
+      this.distributingMemo = memo;
+      // 案件メンバーがあればデフォルト選択
+      this.distributeMemberIds = [];
+      if (memo.projectId) {
+        var project = this.projects.find(function(p) { return p.id === memo.projectId; });
+        if (project && project.memberIds) {
+          try {
+            this.distributeMemberIds = JSON.parse(project.memberIds);
+          } catch (e) {}
+        }
+      }
+      new bootstrap.Modal(document.getElementById('distributeModal')).show();
+    },
+    doDistributeEmail: function() {
+      var self = this;
+      bootstrap.Modal.getInstance(document.getElementById('distributeModal')).hide();
+      this.showLoading('メール送信中...');
+      gasRun('distributeMemoByEmail', this.distributingMemo.id, this.distributeMemberIds)
+        .then(function(result) {
+          self.showToast(result.message, result.success ? 'success' : 'danger');
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+    doDistributeChat: function() {
+      var self = this;
+      bootstrap.Modal.getInstance(document.getElementById('distributeModal')).hide();
+      this.showLoading('Chat送信中...');
+      gasRun('distributeMemoByChat', this.distributingMemo.id, this.distributeMemberIds)
+        .then(function(result) {
+          self.showToast(result.message, result.success ? 'success' : 'danger');
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+
+    // === テンプレート管理 ===
+    refreshTemplates: function() {
+      var self = this;
+      gasRun('getTemplates')
+        .then(function(data) { self.templates = data || []; })
+        .catch(function(err) { self.showToast('取得失敗: ' + err.message, 'danger'); });
+    },
+    openNewTemplate: function() {
+      this.editingTemplate = {
+        id: '',
+        name: '',
+        body: '',
+        docId: '',
+        docUrl: '',
+        isDefault: false
+      };
+      this.templateTab = 'edit';
+    },
+    selectTemplate: function(t) {
+      this.editingTemplate = JSON.parse(JSON.stringify(t));
+      this.templateTab = 'edit';
+    },
+    saveTemplate: function() {
+      var self = this;
+      this.showLoading('保存中...');
+      var data = this.editingTemplate;
+      var promise;
+      if (data.id) {
+        promise = gasRun('updateTemplate', data.id, data);
+      } else {
+        promise = gasRun('createTemplate', data);
+      }
+      promise
+        .then(function(result) {
+          if (result.success) {
+            self.showToast('テンプレートを保存しました');
+            self.refreshTemplates();
+            self.editingTemplate = null;
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+    confirmDeleteTemplate: function(t) {
+      this.deletingTemplate = t;
+      new bootstrap.Modal(document.getElementById('deleteTemplateModal')).show();
+    },
+    doDeleteTemplate: function() {
+      var self = this;
+      var id = this.deletingTemplate.id;
+      bootstrap.Modal.getInstance(document.getElementById('deleteTemplateModal')).hide();
+      gasRun('deleteTemplate', id)
+        .then(function(result) {
+          if (result.success) {
+            self.refreshTemplates();
+            if (self.editingTemplate && self.editingTemplate.id === id) {
+              self.editingTemplate = null;
+            }
+            self.showToast('テンプレートを削除しました');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); });
+    },
+
+    // === 案件管理 ===
+    refreshProjects: function() {
+      var self = this;
+      gasRun('getProjects')
+        .then(function(data) { self.projects = data || []; })
+        .catch(function(err) { self.showToast('取得失敗: ' + err.message, 'danger'); });
+    },
+    openNewProject: function() {
+      this.editingProject = {
+        id: '',
+        name: '',
+        description: '',
+        folderId: '',
+        folderUrl: '',
+        status: 'active',
+        selectedMemberIds: []
+      };
+    },
+    selectProject: function(p) {
+      var proj = JSON.parse(JSON.stringify(p));
+      try {
+        proj.selectedMemberIds = JSON.parse(proj.memberIds || '[]');
+      } catch (e) {
+        proj.selectedMemberIds = [];
+      }
+      this.editingProject = proj;
+    },
+    saveProject: function() {
+      var self = this;
+      this.showLoading('保存中...');
+      var data = this.editingProject;
+      data.memberIds = data.selectedMemberIds || [];
+      var promise;
+      if (data.id) {
+        promise = gasRun('updateProject', data.id, data);
+      } else {
+        promise = gasRun('createProject', data);
+      }
+      promise
+        .then(function(result) {
+          if (result.success) {
+            self.showToast('案件を保存しました');
+            self.refreshProjects();
+            self.editingProject = null;
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+    confirmDeleteProject: function(p) {
+      this.deletingProject = p;
+      new bootstrap.Modal(document.getElementById('deleteProjectModal')).show();
+    },
+    doDeleteProject: function() {
+      var self = this;
+      var id = this.deletingProject.id;
+      bootstrap.Modal.getInstance(document.getElementById('deleteProjectModal')).hide();
+      gasRun('deleteProject', id)
+        .then(function(result) {
+          if (result.success) {
+            self.refreshProjects();
+            if (self.editingProject && self.editingProject.id === id) {
+              self.editingProject = null;
+            }
+            self.showToast('案件を削除しました');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); });
+    },
+
+    // === メンバー管理 ===
+    refreshMembers: function() {
+      var self = this;
+      gasRun('getMembers')
+        .then(function(data) { self.members = data || []; })
+        .catch(function(err) { self.showToast('取得失敗: ' + err.message, 'danger'); });
+    },
+    openNewMember: function() {
+      this.editingMember = {
+        id: '',
+        name: '',
+        email: '',
+        chatWebhookUrl: ''
+      };
+    },
+    selectMember: function(m) {
+      this.editingMember = JSON.parse(JSON.stringify(m));
+    },
+    saveMember: function() {
+      var self = this;
+      this.showLoading('保存中...');
+      var data = this.editingMember;
+      var promise;
+      if (data.id) {
+        promise = gasRun('updateMember', data.id, data);
+      } else {
+        promise = gasRun('createMember', data);
+      }
+      promise
+        .then(function(result) {
+          if (result.success) {
+            self.showToast('メンバーを保存しました');
+            self.refreshMembers();
+            self.editingMember = null;
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+    confirmDeleteMember: function(m) {
+      this.deletingMember = m;
+      new bootstrap.Modal(document.getElementById('deleteMemberModal')).show();
+    },
+    doDeleteMember: function() {
+      var self = this;
+      var id = this.deletingMember.id;
+      bootstrap.Modal.getInstance(document.getElementById('deleteMemberModal')).hide();
+      gasRun('deleteMember', id)
+        .then(function(result) {
+          if (result.success) {
+            self.refreshMembers();
+            if (self.editingMember && self.editingMember.id === id) {
+              self.editingMember = null;
+            }
+            self.showToast('メンバーを削除しました');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); });
+    },
+
+    // === 設定 ===
+    applySettings_: function(settings) {
+      if (!settings) return;
+      this.settingsForm.triggerHour = settings.triggerHour || '7';
+      this.settingsForm.defaultTemplateId = settings.defaultTemplateId || '';
+      this.settingsForm.baseFolderId = settings.baseFolderId || '';
+      this.settingsForm.baseFolderUrl = settings.baseFolderUrl || '';
+      try {
+        var calIds = JSON.parse(settings.targetCalendarIds || '["primary"]');
+        this.settingsForm.targetCalendarIds = calIds;
+      } catch (e) {
+        this.settingsForm.targetCalendarIds = ['primary'];
+      }
+    },
+
+    loadCalendars: function() {
+      var self = this;
+      gasRun('getUserCalendars')
+        .then(function(cals) { self.availableCalendars = cals || []; })
+        .catch(function() {});
+    },
+
+    loadTriggerStatus: function() {
+      var self = this;
+      gasRun('getTriggerStatus')
+        .then(function(status) { self.triggerStatus = status; })
+        .catch(function() {});
+    },
+
+    saveAllSettings: function() {
+      var self = this;
+      this.showLoading('設定を保存中...');
+      var data = {
+        triggerHour: this.settingsForm.triggerHour,
+        targetCalendarIds: JSON.stringify(this.settingsForm.targetCalendarIds),
+        defaultTemplateId: this.settingsForm.defaultTemplateId
+      };
+      gasRun('saveSettings', data)
+        .then(function(result) {
+          if (result.success) {
+            self.showToast('設定を保存しました');
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+
+    saveTrigger: function() {
+      var self = this;
+      this.showLoading('トリガーを設定中...');
+      gasRun('setupDailyTrigger', parseInt(this.settingsForm.triggerHour))
+        .then(function(result) {
+          self.showToast(result.message, result.success ? 'success' : 'danger');
+          self.loadTriggerStatus();
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    },
+
+    removeTrigger: function() {
+      var self = this;
+      gasRun('removeDailyTrigger')
+        .then(function(result) {
+          self.showToast(result.message);
+          self.loadTriggerStatus();
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); });
+    },
+
+    confirmReset: function() {
+      new bootstrap.Modal(document.getElementById('resetConfirmModal')).show();
+    },
+    doReset: function() {
+      var self = this;
+      bootstrap.Modal.getInstance(document.getElementById('resetConfirmModal')).hide();
+      gasRun('resetSetup')
+        .then(function(result) {
+          if (result.success) {
+            self.setupDone = false;
+            self.memos = [];
+            self.templates = [];
+            self.projects = [];
+            self.members = [];
+            self.showToast(result.message);
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); });
+    },
+
+    confirmRecreateDatabase: function() {
+      new bootstrap.Modal(document.getElementById('recreateDbModal')).show();
+    },
+    doRecreateDatabase: function() {
+      var self = this;
+      bootstrap.Modal.getInstance(document.getElementById('recreateDbModal')).hide();
+      this.showLoading('新規データベースを作成中...');
+      gasRun('recreateDatabase', this.recreateDbFolderId || null)
+        .then(function(result) {
+          if (result.success) {
+            self.showToast(result.message);
+            setTimeout(function() {
+              google.script.run.withSuccessHandler(function() {}).withFailureHandler(function() {});
+              location.reload();
+            }, 1500);
+          } else {
+            self.showToast(result.message, 'danger');
+          }
+        })
+        .catch(function(err) { self.showToast('エラー: ' + err.message, 'danger'); })
+        .finally(function() { self.hideLoading(); });
+    }
+  }
+});
+
+app.mount('#app');
+  </script>
 </body>
 </html>

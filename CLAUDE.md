@@ -20,32 +20,32 @@ Googleカレンダーと連携し、会議の議事録作成・管理を効率�
 ```
 src/                    # GASソースコード（claspのrootDir）
 ├── appsscript.json     # GASプロジェクト設定・OAuthスコープ
-├── Code.gs             # エントリポイント（doGet, include）
-├── Setup.gs            # 初回セットアップ・プロビジョニング
-├── MemoRepository.gs   # 議事録CRUD（CacheService対応）
-├── TemplateRepository.gs # テンプレートCRUD（Googleドキュメント対応）
-├── SettingsRepository.gs # 設定読み書き
-├── ProjectRepository.gs  # 案件CRUD
-├── MemberRepository.gs   # メンバーCRUD
-├── CalendarService.gs  # Googleカレンダー連携
-├── AutoGenerator.gs    # 議事メモ自動生成・Googleドキュメント生成
-├── DistributionService.gs # 議事録配布（Gmail/Google Chat）
-├── TriggerManager.gs   # 時間主導型トリガー管理
-├── Utils.gs            # ユーティリティ（UUID, 日付フォーマット）
-├── index.html          # メインHTML（SPAエントリ・サイドバーナビ）
-├── css.html            # Claude風モダンCSS
-├── js-app.html         # Vue.jsアプリケーション・全ロジック
-├── page-memos.html     # 議事録一覧画面（フィルタ・配布対応）
-├── page-memo-edit.html # 議事録編集画面（案件選択・GDoc対応）
-├── page-projects.html  # 案件管理画面
-├── page-members.html   # メンバー管理画面
-├── page-templates.html # テンプレート管理画面（Googleドキュメント対応）
-└── page-settings.html  # 設定画面（フォルダ設定対応）
+├── Code.gs             # 全バックエンドコード統合ファイル（doGet, Setup, Repository, Service等）
+└── index.html          # 全フロントエンドコード統合ファイル（HTML + CSS + Vue.js）
 docs/
 ├── requirements.md     # 要件定義書
 ├── IMPROVE.md          # 追加要望
 └── er-diagram.md       # ER図（Mermaid）
 ```
+
+### Code.gs セクション構成
+1. Utilities - UUID生成、日付フォーマット
+2. Setup - 初回セットアップ、DB新規作成（recreateDatabase）、シート作成
+3. SettingsRepository - 設定読み書き
+4. MemberRepository - メンバーCRUD（キャッシュ対応）
+5. ProjectRepository - 案件CRUD（フォルダ自動作成、キャッシュ対応）
+6. TemplateRepository - テンプレートCRUD（Googleドキュメント対応）
+7. MemoRepository - 議事録CRUD（CacheService対応、論理削除）
+8. CalendarService - Googleカレンダー連携
+9. AutoGenerator - 議事メモ自動生成・Googleドキュメント生成
+10. DistributionService - 議事録配布（Gmail/Google Chat）
+11. TriggerManager - 時間主導型トリガー管理
+12. Entry Point - doGet()
+
+### index.html 構成
+- CSS: Claude風モダンデザイン（ホバーエフェクト強化済み）
+- HTML: セットアップ画面、サイドバー、全6ページ（議事録一覧/編集、案件、メンバー、テンプレート、設定）
+- JavaScript: Vue.js 3 SPA（gasRunラッパー、全CRUD操作、DB新規作成機能）
 
 ## アーキテクチャ
 
